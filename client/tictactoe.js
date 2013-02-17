@@ -1,20 +1,14 @@
-var column = 0;
-Template.cell.column = function() {
-  if (column === 3) { column = 0 }
+Template.turn.turn = function(){
+  return Turns.findOne();
+};
 
-  return column++;
+Template.listRows.rows = function(){
+  return [1,2,3];
 };
 
 var row = 0;
-var row_occurances = 0;
-Template.cell.row = function() {
-  if (row_occurances === 3) {
-    row_occurances = 0;
-    row++;
-  }
-
-  row_occurances++;
-  return row;
+Template.listCells.cells = function(){
+  return Cells.find({ row: row++ });
 };
 
 Template.cell.events({
@@ -22,40 +16,36 @@ Template.cell.events({
     cell = $(e.target);
     cell.removeClass("available");
 
-    var attributes = findCellAttributes(cell);
-    changeTurn(cell, attributes.turn);
+    turn = Turns.findOne();
+    Cells.update(this._id, { row: this.row, column: this.column, move: turn.turn });
+    changeTurn(turn);
 
-    game = Games.findOne({ name: 'first' });
-    setMovement(game, attributes.row, attributes.column, attributes.turn);
-    winner = findWinner(game.scoreBoard);
+    winner = findWinner();
     gameHasWinner(winner);
   }
 });
 
-var findCellAttributes = function(cell){
-  var row = cell.data('row');
-  var column = cell.data('column');
-  var turn = $("#turn").data("turn");
+Template.resetCells.events({
+  'click a': function(){
+    resetCells();
+    resetTurn();
+  }
+});
 
-  return { row: row, column: column, turn: turn }
-};
-
-var changeTurn = function(cell, turn){
-  if (turn == "x") {
-    template = Template.xmove;
-    $("#turn").data("turn", "o");
+var changeTurn = function(turn){
+  if (turn.turn == "x") {
+    Turns.update(turn._id, { turn: 'o' } );
   } else {
-    template = Template.omove;
-    $("#turn").data("turn", "x");
+    Turns.update(turn._id, { turn: 'x' } );
   }
-
-  cell.html(template);
 };
 
-var gameHasWinner = function(){
-  if (winner !== "") {
-    $("#winner").text(winner + " is the winner");
+var gameHasWinner = function(winner){
+  if (winner.length > 0) {
     $(".available").removeClass("available");
-    resetGame(game);
-  }
+    $.each(winner, function(index, cell){
+      Cells.update(cell._id, { row: cell.row, column: cell.column, move: cell.move, winner: true })
+    });
+  };
 }
+

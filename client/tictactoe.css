@@ -12,6 +12,10 @@ td {
   font-size: 70px;
 }
 
+td.winner {
+  background-color: grey;
+}
+
 body:nth-of-type(1) .unicode:after {
   color: #008000;
   font-weight: 900;
