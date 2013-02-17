@@ -26,7 +26,7 @@ Template.cell.events({
 });
 
 Template.resetCells.events({
-  'click a': function(){
+  'click button': function(){
     resetCells();
     resetTurn();
   }
