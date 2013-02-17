@@ -1,0 +1,39 @@
+<head>
+  <title>tictactoe</title>
+</head>
+
+<body>
+  <div id='turn' data-turn="x"></div>
+  <div id='winner'></div>
+  <table>
+    <tbody>
+      <tr class='row'>
+        {{> cell}}
+        {{> cell}}
+        {{> cell}}
+      </tr>
+      <tr class='row'>
+        {{> cell}}
+        {{> cell}}
+        {{> cell}}
+      </tr>
+      <tr class='row'>
+        {{> cell}}
+        {{> cell}}
+        {{> cell}}
+      </tr>
+    </tbody>
+  </table>
+</body>
+
+<template name="cell">
+  <td data-row='{{row}}' data-column='{{column}}' class='movement available'></td>
+</template>
+
+<template name="omove">
+  <span class="unicode large-circle"></span>
+</template>
+
+<template name="xmove">
+  <span class="unicode multiplication-x"></span>
+</template>
